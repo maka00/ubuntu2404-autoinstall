@@ -1,0 +1,7 @@
+iso
+videos
+BOOT
+extracted
+*.bak
+*.iso
+autoinstall.yaml

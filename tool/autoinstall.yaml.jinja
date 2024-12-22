@@ -1,0 +1,79 @@
+# Required configuration
+autoinstall:
+    version: 1
+    identity:
+        realname: "{{ name }}"
+        username: {{ name }}
+        password: "{{ password }}"
+        hostname: {{ hostname }}
+
+    storage:
+        layout:
+            name: direct # or LVM
+            sizing-policy: all # Use the whole disk
+            match:
+#                model:
+#                vendor:
+#                path:
+#                id_path:
+#                devpath:
+#                serial:
+#                ssd:  # Can be either true or false
+                size: largest # Can be either largest or smallest
+    keyboard: #
+        layout: "{{keyboard}}" # For example, US English (DEFAULT)
+        variant: ""
+    locale: "en_US.UTF-8" # Sets the locale for the installed system. For example, US English with UTF-8 character encoding (DEFAULT).
+    timezone: "{{ timezone }}" # Specifies the timezone. Default is "Etc/UTC", but this should be set to your local timezone.
+    refresh-installer:
+        update: true
+        channel: "stable/ubuntu-$REL" # Update from the stable channel (DEFAULT)
+    source:
+        id: ubuntu-server-minimal
+#    network: # Provide a Netplan-formatted network configuration; Default is to use DHCP on Ethernet interfaces
+#        version: 2 # Defines the version of the netplan configuration, and is required for futureproofing; Currently, this must be set to "2"
+#        renderer: networkd # Controls the backend netplan uses (networkd or NetworkManager)
+#        ethernets: # Configures wired network cards
+#            wired:
+#                match:
+#                    name: e* # Applies this configuration to ALL wired network cards in the system
+#                dhcp4: true # This is an example of a manual IPv4 configuration (so we can assign our system a static IP)
+#                dhcp6: false # We will still automatically obtain the IPv6 configuration
+    apt:
+        preserve_sources_list: false
+        mirror-selection:
+            primary:
+                - country-mirror
+                - uri: "http://archive.ubuntu.com/ubuntu"
+                  arches: [i386, amd64]
+                - uri: "http://ports.ubuntu.com/ubuntu-ports"
+                  arches: [s390x, arm64, armhf, powerpc, ppc64el, riscv64]
+        fallback: abort
+        geoip: true
+    ssh:
+        install-server: true
+        authorized-keys: ["{{ ssh_key }}"]
+        allow-pw: true
+    codecs:
+        install: true
+    drivers:
+        install: true
+    packages:
+        - mc
+        - vim
+        - btop
+        - htop
+        - 7zip
+        - python3.12-venv
+        - rsync
+#    snaps:
+#        - name: hello-world
+#          channel: stable
+#          classic: false
+    updates: all
+    shutdown: poweroff # or reboot
+    error-commands:
+        - tar -czf /installer-logs.tar.gz /var/log/installer
+        - journalctl -b > /installer-journal.log
+    kernel-crash-dumps:
+        enabled: false

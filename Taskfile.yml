@@ -1,0 +1,52 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  download:
+    desc: download iso
+    cmds:
+      - |
+        mkdir -p iso | true
+        wget -O iso/ubuntu-24.04.1-live-server-amd64.iso https://releases.ubuntu.com/24.04.1/ubuntu-24.04.1-live-server-amd64.iso
+
+  cleanup:
+    desc: cleanup
+    cmds:
+      - |
+        rm -rf extracted | true
+        rm -rf BOOT | true
+        rm *.iso | true
+
+  extract-iso:
+    desc: extract iso
+    cmds:
+      - |
+        rm -rf extracted | true
+        7z -y x iso/ubuntu-24.04.1-live-server-amd64.iso -oextracted
+        mv "extracted/[BOOT]" BOOT
+    silent: true
+
+  print-torito:
+    desc: print torito (you need to adapt this!)
+          and put it into the torito.sh
+    cmds:
+      - |
+        xorriso -indev iso/ubuntu-24.04.1-live-server-amd64.iso -report_el_torito as_mkisofs
+
+  generate-autoinstall:
+    desc: generate autoinstall.yaml
+    dir: tool
+    cmds:
+      - |
+        bash run-it.sh > ../autoinstall.yaml
+
+  build-iso:
+    desc: build the actual iso
+    cmds:
+      - |
+        cp autoinstall.yaml extracted/
+        bash torito.sh
