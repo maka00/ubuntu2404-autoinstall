@@ -3,20 +3,41 @@
 The goal is to create a Ubuntu 24.04 image with a predefined user, network-setup, harddisk preparation and some basic packages installed without having to have a user interaction during the installation process.
 
 # Required tools
-```bash
+```
 7z 
 xorriso
 wget
+task (https://taskfile.dev/)
 ```
 # autoinstall.yaml
-prepare the autoinstall.yaml file with
-`task generate-autoinstall`
+prepare the [autoinstall.yaml.jinja](tool/autoinstall.yaml.jinja) file.
+Add software packages as you like.
 
+create a .env file along the autoinstall.yaml.jinja file with the content:
+```
+DEVICEHOSTNAME=<servername>
+USERNAME=<user>
+PASSWORD=<password>
+KEYBOARDLAYOUT=<keyboardlayout>
+TIMEZONE=<timezone>
+SSH_KEY_PUB=<text file containing sshpubkey (one per line)>
+```
+
+If `SSH_KEY_PUB` is not set the sshd will allow password authentication. 
+If it is set you have to prepare a secrets.txt file with all public keys which shall have remote access to the machine.
+
+The `PASSWORD` content has to be generated with:
+```bash
+openssl passwd
+```
+
+Generate the actual autoinstall.yaml file with:
+`task generate-autoinstall`.
 This wil generate an autoinstall.yaml file in the root folder.
 
 # prepare ISO images
 
-1) Perform a `task download` to download the Ubuntu server image to the (iso)[iso] folder.
+1) Perform a `task download` to download the Ubuntu server image to the (iso)[iso/] folder.
 
 2) Extract the ISO image with `task extract-iso`.
 in (extracted/boot/grub/grub.cfg)[extracted/boot/grub/grub.cfg] change the entry

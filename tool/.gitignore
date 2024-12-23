@@ -2,3 +2,5 @@
 venv
 *.yaml
 .env
+.idea
+secrets.txt

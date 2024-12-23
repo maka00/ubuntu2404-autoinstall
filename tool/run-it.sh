@@ -4,4 +4,4 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-python3 autoinstall-generator.py
+python3 autoinstall-generator.py $1

@@ -42,7 +42,7 @@ tasks:
     dir: tool
     cmds:
       - |
-        bash run-it.sh > ../autoinstall.yaml
+        bash run-it.sh ../autoinstall.yaml
 
   build-iso:
     desc: build the actual iso

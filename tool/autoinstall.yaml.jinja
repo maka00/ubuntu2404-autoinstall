@@ -52,8 +52,15 @@ autoinstall:
         geoip: true
     ssh:
         install-server: true
-        authorized-keys: ["{{ ssh_key }}"]
+      {% if ssh_key %}
+        authorized-keys:
+          {% for key in ssh_key %}
+          - {{ key }}
+          {% endfor %}
+        allow-pw: false
+      {% else %}
         allow-pw: true
+      {% endif %}
     codecs:
         install: true
     drivers:
@@ -61,9 +68,15 @@ autoinstall:
     packages:
         - mc
         - vim
-        - btop
         - htop
         - 7zip
+        - fzf
+        - jq
+        - yq
+        - tmux
+        - apt-transport-https
+        - gpg
+        - ca-certificates
         - python3.12-venv
         - rsync
 #    snaps:
